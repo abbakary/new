@@ -177,9 +177,9 @@ const existingCustomers = [
 type SalesPerson = { id: string; name: string; phone?: string; role?: string };
 
 const defaultSalesPeople: SalesPerson[] = [
-{ id: "SP-001", name: "Sarah Wilson" },
-{ id: "SP-002", name: "James Okello" },
-{ id: "SP-003", name: "Peter Mukasa" },
+  { id: "SP-001", name: "Sarah Wilson" },
+  { id: "SP-002", name: "James Okello" },
+  { id: "SP-003", name: "Peter Mukasa" },
 ];
 
 export default function AddCustomer() {
@@ -203,7 +203,9 @@ export default function AddCustomer() {
     createdAt: string;
     visitId?: string;
   };
-  const [createdCustomers, setCreatedCustomers] = useState<CreatedCustomerSummary[]>(() => {
+  const [createdCustomers, setCreatedCustomers] = useState<
+    CreatedCustomerSummary[]
+  >(() => {
     try {
       const raw = localStorage.getItem("createdCustomers");
       return raw ? JSON.parse(raw) : [];
@@ -213,7 +215,10 @@ export default function AddCustomer() {
   });
   useEffect(() => {
     try {
-      localStorage.setItem("createdCustomers", JSON.stringify(createdCustomers));
+      localStorage.setItem(
+        "createdCustomers",
+        JSON.stringify(createdCustomers),
+      );
     } catch {}
   }, [createdCustomers]);
 
@@ -284,7 +289,14 @@ export default function AddCustomer() {
       if (!formData.companyName) return false;
     }
     return true;
-  }, [formData.customerType, formData.subType, formData.firstName, formData.lastName, formData.companyName, isPersonal]);
+  }, [
+    formData.customerType,
+    formData.subType,
+    formData.firstName,
+    formData.lastName,
+    formData.companyName,
+    isPersonal,
+  ]);
 
   useEffect(() => {
     if (mode === "new" && activeTab === "basic" && basicComplete) {
@@ -316,23 +328,42 @@ export default function AddCustomer() {
 
   const handlePartialSave = () => {
     if (!validateBasicAndContact()) {
-      error("Missing required information", "Complete Basic Info and Contact & Address before saving.");
+      error(
+        "Missing required information",
+        "Complete Basic Info and Contact & Address before saving.",
+      );
       return;
     }
     // Sales-specific validation and preparation
     if (formData.visitType === "Sales") {
-      if (!formData.salesItemType || !formData.salesQuantity || !formData.salesPricePerItem || !(formData.salesPersonId || formData.salesPersonName)) {
-        error("Incomplete sales details", "Provide item type, quantity, price per item, and salesperson.");
+      if (
+        !formData.salesItemType ||
+        !formData.salesQuantity ||
+        !formData.salesPricePerItem ||
+        !(formData.salesPersonId || formData.salesPersonName)
+      ) {
+        error(
+          "Incomplete sales details",
+          "Provide item type, quantity, price per item, and salesperson.",
+        );
         setActiveTab("service");
         return;
       }
-      if (!formData.salesAmount && formData.salesQuantity && formData.salesPricePerItem) {
-        handleInputChange("salesAmount", formData.salesQuantity * formData.salesPricePerItem);
+      if (
+        !formData.salesAmount &&
+        formData.salesQuantity &&
+        formData.salesPricePerItem
+      ) {
+        handleInputChange(
+          "salesAmount",
+          formData.salesQuantity * formData.salesPricePerItem,
+        );
       }
     }
-    const customerName = formData.customerType === "Personal" && formData.firstName
-      ? `${formData.firstName} ${formData.lastName}`.trim()
-      : formData.companyName || "New Customer";
+    const customerName =
+      formData.customerType === "Personal" && formData.firstName
+        ? `${formData.firstName} ${formData.lastName}`.trim()
+        : formData.companyName || "New Customer";
     const visit = addVisit({
       customerName,
       visitType: (formData.visitType as any) || "Ask",
@@ -350,9 +381,13 @@ export default function AddCustomer() {
                 (formData.salesQuantity && formData.salesPricePerItem
                   ? formData.salesQuantity * formData.salesPricePerItem
                   : undefined),
-              salesperson: formData.salesPersonId || formData.salesPersonName
-                ? { id: formData.salesPersonId, name: formData.salesPersonName }
-                : undefined,
+              salesperson:
+                formData.salesPersonId || formData.salesPersonName
+                  ? {
+                      id: formData.salesPersonId,
+                      name: formData.salesPersonName,
+                    }
+                  : undefined,
             }
           : undefined,
     });
@@ -366,11 +401,20 @@ export default function AddCustomer() {
       subType: formData.subType,
       phone: formData.phone,
       email: formData.email,
-      location: [formData.address, formData.city, formData.district, formData.country]
+      location: [
+        formData.address,
+        formData.city,
+        formData.district,
+        formData.country,
+      ]
         .filter(Boolean)
         .join(", "),
-      registeredDate: (formData.arrivedAt && new Date(formData.arrivedAt).toISOString()) || new Date().toISOString(),
-      lastVisit: (formData.arrivedAt && new Date(formData.arrivedAt).toISOString()) || new Date().toISOString(),
+      registeredDate:
+        (formData.arrivedAt && new Date(formData.arrivedAt).toISOString()) ||
+        new Date().toISOString(),
+      lastVisit:
+        (formData.arrivedAt && new Date(formData.arrivedAt).toISOString()) ||
+        new Date().toISOString(),
       totalOrders: 0,
       status: "Active",
     });
@@ -385,7 +429,10 @@ export default function AddCustomer() {
       },
       ...prev,
     ]);
-    success("Customer saved", "Visit started and header notifications updated.");
+    success(
+      "Customer saved",
+      "Visit started and header notifications updated.",
+    );
     // Reset and collapse form
     setFormData((prev) => ({
       ...prev,
@@ -429,7 +476,10 @@ export default function AddCustomer() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Minimal validation based on visit type
-    if ((formData.visitType === "Service" || formData.visitType === "Sales") && !formData.desiredService) {
+    if (
+      (formData.visitType === "Service" || formData.visitType === "Sales") &&
+      !formData.desiredService
+    ) {
       error("Missing desired service", "Select the service for this visit.");
       setActiveTab("service");
       return;
@@ -438,18 +488,34 @@ export default function AddCustomer() {
     // Register a visit for this creation if visitType provided
     if (formData.visitType) {
       if (formData.visitType === "Sales") {
-        if (!formData.salesItemType || !formData.salesQuantity || !formData.salesPricePerItem || !(formData.salesPersonId || formData.salesPersonName)) {
-          error("Incomplete sales details", "Provide item type, quantity, price per item, and salesperson.");
+        if (
+          !formData.salesItemType ||
+          !formData.salesQuantity ||
+          !formData.salesPricePerItem ||
+          !(formData.salesPersonId || formData.salesPersonName)
+        ) {
+          error(
+            "Incomplete sales details",
+            "Provide item type, quantity, price per item, and salesperson.",
+          );
           setActiveTab("service");
           return;
         }
-        if (!formData.salesAmount && formData.salesQuantity && formData.salesPricePerItem) {
-          handleInputChange("salesAmount", formData.salesQuantity * formData.salesPricePerItem);
+        if (
+          !formData.salesAmount &&
+          formData.salesQuantity &&
+          formData.salesPricePerItem
+        ) {
+          handleInputChange(
+            "salesAmount",
+            formData.salesQuantity * formData.salesPricePerItem,
+          );
         }
       }
-      const customerName = formData.customerType === "Personal" && formData.firstName
-        ? `${formData.firstName} ${formData.lastName}`.trim()
-        : formData.companyName || "New Customer";
+      const customerName =
+        formData.customerType === "Personal" && formData.firstName
+          ? `${formData.firstName} ${formData.lastName}`.trim()
+          : formData.companyName || "New Customer";
       addVisit({
         customerName,
         visitType: formData.visitType as any,
@@ -467,9 +533,13 @@ export default function AddCustomer() {
                   (formData.salesQuantity && formData.salesPricePerItem
                     ? formData.salesQuantity * formData.salesPricePerItem
                     : undefined),
-                salesperson: formData.salesPersonId || formData.salesPersonName
-                  ? { id: formData.salesPersonId, name: formData.salesPersonName }
-                  : undefined,
+                salesperson:
+                  formData.salesPersonId || formData.salesPersonName
+                    ? {
+                        id: formData.salesPersonId,
+                        name: formData.salesPersonName,
+                      }
+                    : undefined,
               }
             : undefined,
       });
@@ -477,9 +547,10 @@ export default function AddCustomer() {
     // Persist customer to global store for search
     {
       const id = `CUST-${Date.now()}`;
-      const customerName = formData.customerType === "Personal" && formData.firstName
-        ? `${formData.firstName} ${formData.lastName}`.trim()
-        : formData.companyName || "New Customer";
+      const customerName =
+        formData.customerType === "Personal" && formData.firstName
+          ? `${formData.firstName} ${formData.lastName}`.trim()
+          : formData.companyName || "New Customer";
       addCustomer({
         id,
         name: customerName,
@@ -487,11 +558,20 @@ export default function AddCustomer() {
         subType: formData.subType,
         phone: formData.phone,
         email: formData.email,
-        location: [formData.address, formData.city, formData.district, formData.country]
+        location: [
+          formData.address,
+          formData.city,
+          formData.district,
+          formData.country,
+        ]
           .filter(Boolean)
           .join(", "),
-        registeredDate: (formData.arrivedAt && new Date(formData.arrivedAt).toISOString()) || new Date().toISOString(),
-        lastVisit: (formData.arrivedAt && new Date(formData.arrivedAt).toISOString()) || new Date().toISOString(),
+        registeredDate:
+          (formData.arrivedAt && new Date(formData.arrivedAt).toISOString()) ||
+          new Date().toISOString(),
+        lastVisit:
+          (formData.arrivedAt && new Date(formData.arrivedAt).toISOString()) ||
+          new Date().toISOString(),
         totalOrders: 0,
         status: "Active",
       });
@@ -516,36 +596,62 @@ export default function AddCustomer() {
     setSelectedCustomer(customer);
     setShowVisitForm(true);
     // Pre-fill form with customer data for quick visit creation
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      firstName: customer.name.includes(' ') ? customer.name.split(' ')[0] : customer.name,
-      lastName: customer.name.includes(' ') ? customer.name.split(' ').slice(1).join(' ') : '',
-      companyName: customer.type !== 'Personal' ? customer.name : '',
-      customerType: customer.type || 'Personal',
-      subType: customer.subType || '',
-      phone: customer.phone || '',
-      email: customer.email || '',
-      address: customer.location ? customer.location.split(',')[0] : '',
-      city: customer.location ? customer.location.split(',')[1]?.trim() : '',
-      district: customer.location ? customer.location.split(',')[2]?.trim() : '',
-      country: customer.location ? customer.location.split(',')[3]?.trim() || 'Uganda' : 'Uganda',
+      firstName: customer.name.includes(" ")
+        ? customer.name.split(" ")[0]
+        : customer.name,
+      lastName: customer.name.includes(" ")
+        ? customer.name.split(" ").slice(1).join(" ")
+        : "",
+      companyName: customer.type !== "Personal" ? customer.name : "",
+      customerType: customer.type || "Personal",
+      subType: customer.subType || "",
+      phone: customer.phone || "",
+      email: customer.email || "",
+      address: customer.location ? customer.location.split(",")[0] : "",
+      city: customer.location ? customer.location.split(",")[1]?.trim() : "",
+      district: customer.location
+        ? customer.location.split(",")[2]?.trim()
+        : "",
+      country: customer.location
+        ? customer.location.split(",")[3]?.trim() || "Uganda"
+        : "Uganda",
     }));
   };
 
   const handleCreateVisitForExisting = () => {
     if (!selectedCustomer || !formData.visitType) {
-      error("Missing information", "Please select visit type and service details.");
+      error(
+        "Missing information",
+        "Please select visit type and service details.",
+      );
       return;
     }
 
     // Validation for sales visits
     if (formData.visitType === "Sales") {
-      if (!formData.salesItemType || !formData.salesQuantity || !formData.salesPricePerItem || !(formData.salesPersonId || formData.salesPersonName)) {
-        error("Incomplete sales details", "Provide item type, quantity, price per item, and salesperson.");
+      if (
+        !formData.salesItemType ||
+        !formData.salesQuantity ||
+        !formData.salesPricePerItem ||
+        !(formData.salesPersonId || formData.salesPersonName)
+      ) {
+        error(
+          "Incomplete sales details",
+          "Provide item type, quantity, price per item, and salesperson.",
+        );
         return;
       }
-      if (!formData.salesAmount && formData.salesQuantity && formData.salesPricePerItem) {
-        handleInputChange("salesAmount", formData.salesQuantity * formData.salesPricePerItem);
+      if (
+        !formData.salesAmount &&
+        formData.salesQuantity &&
+        formData.salesPricePerItem
+      ) {
+        handleInputChange(
+          "salesAmount",
+          formData.salesQuantity * formData.salesPricePerItem,
+        );
       }
     }
 
@@ -556,21 +662,37 @@ export default function AddCustomer() {
       service: formData.desiredService || undefined,
       arrivedAt: formData.arrivedAt || new Date().toISOString(),
       notes: formData.desiredServiceNotes || formData.notes || undefined,
-      salesDetails: formData.visitType === "Sales" ? {
-        itemType: formData.salesItemType,
-        quantity: formData.salesQuantity,
-        pricePerItem: formData.salesPricePerItem,
-        amount: formData.salesAmount ?? (formData.salesQuantity && formData.salesPricePerItem ? formData.salesQuantity * formData.salesPricePerItem : undefined),
-        salesperson: formData.salesPersonId || formData.salesPersonName ? { id: formData.salesPersonId, name: formData.salesPersonName } : undefined,
-      } : undefined,
+      salesDetails:
+        formData.visitType === "Sales"
+          ? {
+              itemType: formData.salesItemType,
+              quantity: formData.salesQuantity,
+              pricePerItem: formData.salesPricePerItem,
+              amount:
+                formData.salesAmount ??
+                (formData.salesQuantity && formData.salesPricePerItem
+                  ? formData.salesQuantity * formData.salesPricePerItem
+                  : undefined),
+              salesperson:
+                formData.salesPersonId || formData.salesPersonName
+                  ? {
+                      id: formData.salesPersonId,
+                      name: formData.salesPersonName,
+                    }
+                  : undefined,
+            }
+          : undefined,
     });
 
-    success("Visit created successfully!", `Visit started for ${selectedCustomer.name}`);
+    success(
+      "Visit created successfully!",
+      `Visit started for ${selectedCustomer.name}`,
+    );
 
     // Reset and return to selection
     setSelectedCustomer(null);
     setShowVisitForm(false);
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       visitType: "",
       arrivedAt: "",
@@ -598,9 +720,13 @@ export default function AddCustomer() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Add New Customer</h1>
+          <h1 className="text-3xl font-bold text-foreground">
+            Add New Customer
+          </h1>
           <p className="text-muted-foreground">
-            Choose to create a new customer or use an existing one. For new customers, fill basic info, contact, visit context, desired service, and preferences.
+            Choose to create a new customer or use an existing one. For new
+            customers, fill basic info, contact, visit context, desired service,
+            and preferences.
           </p>
         </div>
       </div>
@@ -609,23 +735,37 @@ export default function AddCustomer() {
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Customer Mode</CardTitle>
-          <CardDescription>Select whether to create a new customer or use an existing one</CardDescription>
+          <CardDescription>
+            Select whether to create a new customer or use an existing one
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <RadioGroup value={mode} onValueChange={(v) => setMode(v as any)} className="grid grid-cols-2 gap-4">
-            <label className={`border rounded-lg p-4 cursor-pointer ${mode === "new" ? "bg-accent" : ""}`}>
+          <RadioGroup
+            value={mode}
+            onValueChange={(v) => setMode(v as any)}
+            className="grid grid-cols-2 gap-4"
+          >
+            <label
+              className={`border rounded-lg p-4 cursor-pointer ${mode === "new" ? "bg-accent" : ""}`}
+            >
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="new" id="mode-new" />
                 <span className="font-medium">Create New Customer</span>
               </div>
-              <p className="text-sm text-muted-foreground mt-1">Start a new customer record</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Start a new customer record
+              </p>
             </label>
-            <label className={`border rounded-lg p-4 cursor-pointer ${mode === "existing" ? "bg-accent" : ""}`}>
+            <label
+              className={`border rounded-lg p-4 cursor-pointer ${mode === "existing" ? "bg-accent" : ""}`}
+            >
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="existing" id="mode-existing" />
                 <span className="font-medium">Use Existing Customer</span>
               </div>
-              <p className="text-sm text-muted-foreground mt-1">Search and select an existing customer</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Search and select an existing customer
+              </p>
             </label>
           </RadioGroup>
         </CardContent>
@@ -636,7 +776,9 @@ export default function AddCustomer() {
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Find Existing Customer</CardTitle>
-            <CardDescription>Search by name, ID, email, or phone</CardDescription>
+            <CardDescription>
+              Search by name, ID, email, or phone
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="relative">
@@ -650,7 +792,9 @@ export default function AddCustomer() {
             </div>
             <div className="space-y-2 max-h-[420px] overflow-y-auto">
               {filteredExisting.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No customers match your search.</p>
+                <p className="text-sm text-muted-foreground">
+                  No customers match your search.
+                </p>
               ) : (
                 filteredExisting.map((c) => (
                   <div key={c.id} className="p-3 border rounded-lg">
@@ -658,11 +802,22 @@ export default function AddCustomer() {
                       <div>
                         <p className="font-medium text-foreground">{c.name}</p>
                         <p className="text-xs text-muted-foreground">{c.id}</p>
-                        <p className="text-xs text-muted-foreground">{c.subType}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {c.subType}
+                        </p>
                         <div className="mt-2 flex flex-wrap gap-3 text-sm">
-                          <span className="flex items-center gap-1"><Phone className="h-3 w-3" />{c.phone}</span>
-                          <span className="flex items-center gap-1 text-muted-foreground"><Mail className="h-3 w-3" />{c.email}</span>
-                          <span className="flex items-center gap-1 text-muted-foreground"><MapPin className="h-3 w-3" />{c.location}</span>
+                          <span className="flex items-center gap-1">
+                            <Phone className="h-3 w-3" />
+                            {c.phone}
+                          </span>
+                          <span className="flex items-center gap-1 text-muted-foreground">
+                            <Mail className="h-3 w-3" />
+                            {c.email}
+                          </span>
+                          <span className="flex items-center gap-1 text-muted-foreground">
+                            <MapPin className="h-3 w-3" />
+                            {c.location}
+                          </span>
                         </div>
                       </div>
                       <div className="flex gap-2">
@@ -688,7 +843,10 @@ export default function AddCustomer() {
                 ))
               )}
             </div>
-            <div className="text-xs text-muted-foreground">Tip: If you can’t find the customer, switch back to "Create New Customer" above.</div>
+            <div className="text-xs text-muted-foreground">
+              Tip: If you can’t find the customer, switch back to "Create New
+              Customer" above.
+            </div>
           </CardContent>
         </Card>
       ) : null}
@@ -702,7 +860,8 @@ export default function AddCustomer() {
               Create Visit for {selectedCustomer.name}
             </CardTitle>
             <CardDescription>
-              Customer information is pre-filled. Add visit details and service requirements.
+              Customer information is pre-filled. Add visit details and service
+              requirements.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -711,7 +870,9 @@ export default function AddCustomer() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-semibold">{selectedCustomer.name}</p>
-                  <p className="text-sm text-muted-foreground">{selectedCustomer.id} • {selectedCustomer.type}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedCustomer.id} • {selectedCustomer.type}
+                  </p>
                   <div className="flex items-center gap-4 mt-2 text-sm">
                     <span className="flex items-center gap-1">
                       <Phone className="h-3 w-3" />
@@ -725,10 +886,14 @@ export default function AddCustomer() {
                     )}
                   </div>
                 </div>
-                <Button variant="outline" size="sm" onClick={() => {
-                  setSelectedCustomer(null);
-                  setShowVisitForm(false);
-                }}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedCustomer(null);
+                    setShowVisitForm(false);
+                  }}
+                >
                   <ArrowLeft className="h-4 w-4 mr-1" />
                   Back to Search
                 </Button>
@@ -739,21 +904,33 @@ export default function AddCustomer() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>Visit Type *</Label>
-                <RadioGroup value={formData.visitType} onValueChange={(value) => handleInputChange("visitType", value)} className="grid grid-cols-3 gap-4">
-                  <label className={`border rounded-lg p-3 cursor-pointer ${formData.visitType === "Service" ? "bg-accent" : ""}`}>
+                <RadioGroup
+                  value={formData.visitType}
+                  onValueChange={(value) =>
+                    handleInputChange("visitType", value)
+                  }
+                  className="grid grid-cols-3 gap-4"
+                >
+                  <label
+                    className={`border rounded-lg p-3 cursor-pointer ${formData.visitType === "Service" ? "bg-accent" : ""}`}
+                  >
                     <div className="flex items-center gap-2">
                       <RadioGroupItem value="Service" id="visit-service" />
                       <Wrench className="h-4 w-4" />
                       <span className="font-medium">Service</span>
                     </div>
                   </label>
-                  <label className={`border rounded-lg p-3 cursor-pointer ${formData.visitType === "Sales" ? "bg-accent" : ""}`}>
+                  <label
+                    className={`border rounded-lg p-3 cursor-pointer ${formData.visitType === "Sales" ? "bg-accent" : ""}`}
+                  >
                     <div className="flex items-center gap-2">
                       <RadioGroupItem value="Sales" id="visit-sales" />
                       <span className="font-medium">Sales</span>
                     </div>
                   </label>
-                  <label className={`border rounded-lg p-3 cursor-pointer ${formData.visitType === "Ask" ? "bg-accent" : ""}`}>
+                  <label
+                    className={`border rounded-lg p-3 cursor-pointer ${formData.visitType === "Ask" ? "bg-accent" : ""}`}
+                  >
                     <div className="flex items-center gap-2">
                       <RadioGroupItem value="Ask" id="visit-ask" />
                       <span className="font-medium">Inquiry</span>
@@ -770,7 +947,9 @@ export default function AddCustomer() {
                     id="arrivedAt"
                     type="datetime-local"
                     value={formData.arrivedAt}
-                    onChange={(e) => handleInputChange("arrivedAt", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("arrivedAt", e.target.value)
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -779,15 +958,28 @@ export default function AddCustomer() {
                     id="leftAt"
                     type="datetime-local"
                     value={formData.leftAt}
-                    onChange={(e) => handleInputChange("leftAt", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("leftAt", e.target.value)
+                    }
                   />
                 </div>
               </div>
 
               {/* Service Selection */}
               <div className="space-y-2">
-                <Label htmlFor="desiredService">Service Required {formData.visitType === "Service" || formData.visitType === "Sales" ? "*" : ""}</Label>
-                <Select value={formData.desiredService} onValueChange={(value) => handleInputChange("desiredService", value)}>
+                <Label htmlFor="desiredService">
+                  Service Required{" "}
+                  {formData.visitType === "Service" ||
+                  formData.visitType === "Sales"
+                    ? "*"
+                    : ""}
+                </Label>
+                <Select
+                  value={formData.desiredService}
+                  onValueChange={(value) =>
+                    handleInputChange("desiredService", value)
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select a service" />
                   </SelectTrigger>
@@ -806,7 +998,9 @@ export default function AddCustomer() {
                 <Textarea
                   id="desiredServiceNotes"
                   value={formData.desiredServiceNotes}
-                  onChange={(e) => handleInputChange("desiredServiceNotes", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("desiredServiceNotes", e.target.value)
+                  }
                   placeholder="Add details about this visit (e.g., vehicle info, specific requests, urgency)"
                   rows={3}
                 />
@@ -822,7 +1016,9 @@ export default function AddCustomer() {
                       <Input
                         id="salesItemType"
                         value={formData.salesItemType || ""}
-                        onChange={(e) => handleInputChange("salesItemType", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("salesItemType", e.target.value)
+                        }
                         placeholder="e.g., Tire, Battery, Oil"
                       />
                     </div>
@@ -859,7 +1055,9 @@ export default function AddCustomer() {
                         min="1"
                         value={formData.salesQuantity ?? ""}
                         onChange={(e) => {
-                          const q = e.target.value ? Number(e.target.value) : undefined;
+                          const q = e.target.value
+                            ? Number(e.target.value)
+                            : undefined;
                           handleInputChange("salesQuantity", q);
                           const p = formData.salesPricePerItem ?? 0;
                           if (q && p) handleInputChange("salesAmount", q * p);
@@ -868,14 +1066,18 @@ export default function AddCustomer() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="salesPricePerItem">Price per Item *</Label>
+                      <Label htmlFor="salesPricePerItem">
+                        Price per Item *
+                      </Label>
                       <Input
                         id="salesPricePerItem"
                         type="number"
                         min="0"
                         value={formData.salesPricePerItem ?? ""}
                         onChange={(e) => {
-                          const p = e.target.value ? Number(e.target.value) : undefined;
+                          const p = e.target.value
+                            ? Number(e.target.value)
+                            : undefined;
                           handleInputChange("salesPricePerItem", p);
                           const q = formData.salesQuantity ?? 0;
                           if (q && p) handleInputChange("salesAmount", q * p);
@@ -890,7 +1092,9 @@ export default function AddCustomer() {
                         type="number"
                         value={formData.salesAmount ?? ""}
                         onChange={(e) => {
-                          const a = e.target.value ? Number(e.target.value) : undefined;
+                          const a = e.target.value
+                            ? Number(e.target.value)
+                            : undefined;
                           handleInputChange("salesAmount", a);
                         }}
                         placeholder="Auto-calculated"
@@ -933,16 +1137,24 @@ export default function AddCustomer() {
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">New Customer</CardTitle>
-            <CardDescription>Open the form to add a new customer</CardDescription>
+            <CardDescription>
+              Open the form to add a new customer
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={() => setShowForm(true)}>Open New Customer Form</Button>
+            <Button onClick={() => setShowForm(true)}>
+              Open New Customer Form
+            </Button>
           </CardContent>
         </Card>
       ) : null}
       {mode === "new" && showForm ? (
         <form onSubmit={handleSubmit}>
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as ActiveTab)} className="space-y-6">
+          <Tabs
+            value={activeTab}
+            onValueChange={(v) => setActiveTab(v as ActiveTab)}
+            className="space-y-6"
+          >
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="basic">Basic Info</TabsTrigger>
               <TabsTrigger value="contact">Contact & Address</TabsTrigger>
@@ -957,7 +1169,9 @@ export default function AddCustomer() {
                   <CardTitle className="flex items-center gap-2">
                     <User className="h-5 w-5" /> Basic Information
                   </CardTitle>
-                  <CardDescription>Customer type and identification details</CardDescription>
+                  <CardDescription>
+                    Customer type and identification details
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* Customer Type */}
@@ -965,35 +1179,54 @@ export default function AddCustomer() {
                     <Label>Customer Type *</Label>
                     <RadioGroup
                       value={formData.customerType}
-                      onValueChange={(value) => handleInputChange("customerType", value)}
+                      onValueChange={(value) =>
+                        handleInputChange("customerType", value)
+                      }
                       className="grid grid-cols-2 gap-4"
                     >
                       <div className="flex items-center space-x-2 border rounded-lg p-4 hover:bg-accent">
                         <RadioGroupItem value="Personal" id="personal" />
-                        <Label htmlFor="personal" className="flex-1 cursor-pointer">
+                        <Label
+                          htmlFor="personal"
+                          className="flex-1 cursor-pointer"
+                        >
                           <div className="font-medium">Personal</div>
-                          <div className="text-sm text-muted-foreground">Individual customers</div>
+                          <div className="text-sm text-muted-foreground">
+                            Individual customers
+                          </div>
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2 border rounded-lg p-4 hover:bg-accent">
                         <RadioGroupItem value="Government" id="government" />
-                        <Label htmlFor="government" className="flex-1 cursor-pointer">
+                        <Label
+                          htmlFor="government"
+                          className="flex-1 cursor-pointer"
+                        >
                           <div className="font-medium">Government</div>
-                          <div className="text-sm text-muted-foreground">Government entities</div>
+                          <div className="text-sm text-muted-foreground">
+                            Government entities
+                          </div>
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2 border rounded-lg p-4 hover:bg-accent">
                         <RadioGroupItem value="NGO" id="ngo" />
                         <Label htmlFor="ngo" className="flex-1 cursor-pointer">
                           <div className="font-medium">NGO</div>
-                          <div className="text-sm text-muted-foreground">Non-profit organizations</div>
+                          <div className="text-sm text-muted-foreground">
+                            Non-profit organizations
+                          </div>
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2 border rounded-lg p-4 hover:bg-accent">
                         <RadioGroupItem value="Private" id="private" />
-                        <Label htmlFor="private" className="flex-1 cursor-pointer">
+                        <Label
+                          htmlFor="private"
+                          className="flex-1 cursor-pointer"
+                        >
                           <div className="font-medium">Private</div>
-                          <div className="text-sm text-muted-foreground">Private companies</div>
+                          <div className="text-sm text-muted-foreground">
+                            Private companies
+                          </div>
                         </Label>
                       </div>
                     </RadioGroup>
@@ -1003,12 +1236,19 @@ export default function AddCustomer() {
                   {formData.customerType && (
                     <div className="space-y-2">
                       <Label htmlFor="subType">Customer Sub-Type *</Label>
-                      <Select value={formData.subType} onValueChange={(value) => handleInputChange("subType", value)}>
+                      <Select
+                        value={formData.subType}
+                        onValueChange={(value) =>
+                          handleInputChange("subType", value)
+                        }
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Select sub-type" />
                         </SelectTrigger>
                         <SelectContent>
-                          {customerSubTypes[formData.customerType as keyof typeof customerSubTypes]?.map((subType) => (
+                          {customerSubTypes[
+                            formData.customerType as keyof typeof customerSubTypes
+                          ]?.map((subType) => (
                             <SelectItem key={subType} value={subType}>
                               {subType}
                             </SelectItem>
@@ -1027,7 +1267,9 @@ export default function AddCustomer() {
                           <Input
                             id="firstName"
                             value={formData.firstName}
-                            onChange={(e) => handleInputChange("firstName", e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("firstName", e.target.value)
+                            }
                             placeholder="Enter first name"
                             required
                           />
@@ -1037,7 +1279,9 @@ export default function AddCustomer() {
                           <Input
                             id="lastName"
                             value={formData.lastName}
-                            onChange={(e) => handleInputChange("lastName", e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("lastName", e.target.value)
+                            }
                             placeholder="Enter last name"
                             required
                           />
@@ -1045,11 +1289,15 @@ export default function AddCustomer() {
                       </>
                     ) : (
                       <div className="md:col-span-2 space-y-2">
-                        <Label htmlFor="companyName">Organization/Company Name *</Label>
+                        <Label htmlFor="companyName">
+                          Organization/Company Name *
+                        </Label>
                         <Input
                           id="companyName"
                           value={formData.companyName}
-                          onChange={(e) => handleInputChange("companyName", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("companyName", e.target.value)
+                          }
                           placeholder="Enter organization or company name"
                           required
                         />
@@ -1060,38 +1308,56 @@ export default function AddCustomer() {
                   {/* Personal Customer Specific Fields */}
                   {isPersonal && (
                     <>
-                      
                       <div className="space-y-3">
                         <div className="flex items-center space-x-2">
                           <Checkbox
                             id="isOwner"
                             checked={formData.isOwner}
-                            onCheckedChange={(checked) => handleInputChange("isOwner", checked)}
+                            onCheckedChange={(checked) =>
+                              handleInputChange("isOwner", checked)
+                            }
                           />
-                          <Label htmlFor="isOwner">I am the vehicle owner</Label>
+                          <Label htmlFor="isOwner">
+                            I am the vehicle owner
+                          </Label>
                         </div>
 
                         {!formData.isOwner && (
                           <div className="grid gap-4 md:grid-cols-2 ml-6">
                             <div className="space-y-2">
-                              <Label htmlFor="ownerName">Vehicle Owner Name</Label>
+                              <Label htmlFor="ownerName">
+                                Vehicle Owner Name
+                              </Label>
                               <Input
                                 id="ownerName"
                                 value={formData.ownerName}
-                                onChange={(e) => handleInputChange("ownerName", e.target.value)}
+                                onChange={(e) =>
+                                  handleInputChange("ownerName", e.target.value)
+                                }
                                 placeholder="Enter owner's name"
                               />
                             </div>
                             <div className="space-y-2">
-                              <Label htmlFor="relationship">Relationship to Owner</Label>
-                              <Select value={formData.relationship} onValueChange={(value) => handleInputChange("relationship", value)}>
+                              <Label htmlFor="relationship">
+                                Relationship to Owner
+                              </Label>
+                              <Select
+                                value={formData.relationship}
+                                onValueChange={(value) =>
+                                  handleInputChange("relationship", value)
+                                }
+                              >
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select relationship" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   <SelectItem value="driver">Driver</SelectItem>
-                                  <SelectItem value="family">Family Member</SelectItem>
-                                  <SelectItem value="employee">Employee</SelectItem>
+                                  <SelectItem value="family">
+                                    Family Member
+                                  </SelectItem>
+                                  <SelectItem value="employee">
+                                    Employee
+                                  </SelectItem>
                                   <SelectItem value="friend">Friend</SelectItem>
                                   <SelectItem value="other">Other</SelectItem>
                                 </SelectContent>
@@ -1107,11 +1373,18 @@ export default function AddCustomer() {
                   {isBusiness && (
                     <div className="grid gap-4 md:grid-cols-2">
                       <div className="space-y-2">
-                        <Label htmlFor="businessRegNumber">Registration Number</Label>
+                        <Label htmlFor="businessRegNumber">
+                          Registration Number
+                        </Label>
                         <Input
                           id="businessRegNumber"
                           value={formData.businessRegNumber}
-                          onChange={(e) => handleInputChange("businessRegNumber", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "businessRegNumber",
+                              e.target.value,
+                            )
+                          }
                           placeholder="Business registration number"
                         />
                       </div>
@@ -1120,23 +1393,32 @@ export default function AddCustomer() {
                         <Input
                           id="taxId"
                           value={formData.taxId}
-                          onChange={(e) => handleInputChange("taxId", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("taxId", e.target.value)
+                          }
                           placeholder="Tax identification number"
                         />
                       </div>
                       <div className="md:col-span-2 space-y-2">
-                        <Label htmlFor="contactPerson">Primary Contact Person</Label>
+                        <Label htmlFor="contactPerson">
+                          Primary Contact Person
+                        </Label>
                         <Input
                           id="contactPerson"
                           value={formData.contactPerson}
-                          onChange={(e) => handleInputChange("contactPerson", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("contactPerson", e.target.value)
+                          }
                           placeholder="Name of primary contact person"
                         />
                       </div>
                     </div>
                   )}
 
-                  <div className="text-xs text-muted-foreground">When required fields are filled, this will automatically proceed to Contact & Address.</div>
+                  <div className="text-xs text-muted-foreground">
+                    When required fields are filled, this will automatically
+                    proceed to Contact & Address.
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -1148,7 +1430,9 @@ export default function AddCustomer() {
                   <CardTitle className="flex items-center gap-2">
                     <Phone className="h-5 w-5" /> Contact & Address Information
                   </CardTitle>
-                  <CardDescription>Communication details and location information</CardDescription>
+                  <CardDescription>
+                    Communication details and location information
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="grid gap-4 md:grid-cols-2">
@@ -1158,7 +1442,9 @@ export default function AddCustomer() {
                         id="phone"
                         type="tel"
                         value={formData.phone}
-                        onChange={(e) => handleInputChange("phone", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("phone", e.target.value)
+                        }
                         placeholder="+256 700 123 456"
                         required
                       />
@@ -1169,7 +1455,9 @@ export default function AddCustomer() {
                         id="altPhone"
                         type="tel"
                         value={formData.altPhone}
-                        onChange={(e) => handleInputChange("altPhone", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("altPhone", e.target.value)
+                        }
                         placeholder="+256 700 123 456"
                       />
                     </div>
@@ -1181,7 +1469,9 @@ export default function AddCustomer() {
                       id="email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("email", e.target.value)
+                      }
                       placeholder="customer@example.com"
                     />
                   </div>
@@ -1191,7 +1481,9 @@ export default function AddCustomer() {
                     <Textarea
                       id="address"
                       value={formData.address}
-                      onChange={(e) => handleInputChange("address", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("address", e.target.value)
+                      }
                       placeholder="Enter full street address"
                       required
                     />
@@ -1203,7 +1495,9 @@ export default function AddCustomer() {
                       <Input
                         id="city"
                         value={formData.city}
-                        onChange={(e) => handleInputChange("city", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("city", e.target.value)
+                        }
                         placeholder="e.g., Kampala"
                         required
                       />
@@ -1213,7 +1507,9 @@ export default function AddCustomer() {
                       <Input
                         id="district"
                         value={formData.district}
-                        onChange={(e) => handleInputChange("district", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("district", e.target.value)
+                        }
                         placeholder="e.g., Kampala"
                         required
                       />
@@ -1223,7 +1519,9 @@ export default function AddCustomer() {
                       <Input
                         id="country"
                         value={formData.country}
-                        onChange={(e) => handleInputChange("country", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("country", e.target.value)
+                        }
                         placeholder="Uganda"
                       />
                     </div>
@@ -1232,13 +1530,20 @@ export default function AddCustomer() {
                   {/* Proceed or Save controls after step 2 */}
                   <div className="flex items-center justify-between border-t pt-4 mt-2">
                     <div className="text-sm text-muted-foreground">
-                      After completing Basic Info and Contact & Address, you can proceed to choose a Service or save the customer now.
+                      After completing Basic Info and Contact & Address, you can
+                      proceed to choose a Service or save the customer now.
                     </div>
                     <div className="flex gap-2">
-                      <Button type="button" variant="outline" onClick={() => setActiveTab("service")}>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setActiveTab("service")}
+                      >
                         Proceed to Service
                       </Button>
-                      <Button type="button" onClick={handlePartialSave}>Save Customer Now</Button>
+                      <Button type="button" onClick={handlePartialSave}>
+                        Save Customer Now
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -1252,7 +1557,9 @@ export default function AddCustomer() {
                   <CardTitle className="flex items-center gap-2">
                     <Wrench className="h-5 w-5" /> Service & Visit Context
                   </CardTitle>
-                  <CardDescription>Capture visit purpose, timings, and desired service</CardDescription>
+                  <CardDescription>
+                    Capture visit purpose, timings, and desired service
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* Visit context */}
@@ -1261,7 +1568,9 @@ export default function AddCustomer() {
                       <Label>Visit Type</Label>
                       <RadioGroup
                         value={formData.visitType}
-                        onValueChange={(value) => handleInputChange("visitType", value)}
+                        onValueChange={(value) =>
+                          handleInputChange("visitType", value)
+                        }
                         className="grid grid-cols-3 gap-2"
                       >
                         <label className="flex items-center gap-2 border rounded-lg p-2 cursor-pointer">
@@ -1286,7 +1595,9 @@ export default function AddCustomer() {
                             id="arrivedAt"
                             type="datetime-local"
                             value={formData.arrivedAt}
-                            onChange={(e) => handleInputChange("arrivedAt", e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("arrivedAt", e.target.value)
+                            }
                           />
                         </div>
                         <div className="space-y-1">
@@ -1295,18 +1606,33 @@ export default function AddCustomer() {
                             id="leftAt"
                             type="datetime-local"
                             value={formData.leftAt}
-                            onChange={(e) => handleInputChange("leftAt", e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("leftAt", e.target.value)
+                            }
                           />
                         </div>
                       </div>
-                      <p className="text-xs text-muted-foreground">Capture arrival and departure times for tracking.</p>
+                      <p className="text-xs text-muted-foreground">
+                        Capture arrival and departure times for tracking.
+                      </p>
                     </div>
                   </div>
 
                   {/* Desired service */}
                   <div className="space-y-2">
-                    <Label htmlFor="desiredService">Desired Service {formData.visitType === "Service" || formData.visitType === "Sales" ? "*" : ""}</Label>
-                    <Select value={formData.desiredService} onValueChange={(value) => handleInputChange("desiredService", value)}>
+                    <Label htmlFor="desiredService">
+                      Desired Service{" "}
+                      {formData.visitType === "Service" ||
+                      formData.visitType === "Sales"
+                        ? "*"
+                        : ""}
+                    </Label>
+                    <Select
+                      value={formData.desiredService}
+                      onValueChange={(value) =>
+                        handleInputChange("desiredService", value)
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select a service" />
                       </SelectTrigger>
@@ -1319,7 +1645,10 @@ export default function AddCustomer() {
                       </SelectContent>
                     </Select>
                     {formData.visitType === "Ask" && (
-                      <p className="text-xs text-muted-foreground">If this is a consultation, selecting a service is optional. Use notes below to add context.</p>
+                      <p className="text-xs text-muted-foreground">
+                        If this is a consultation, selecting a service is
+                        optional. Use notes below to add context.
+                      </p>
                     )}
                   </div>
 
@@ -1328,7 +1657,9 @@ export default function AddCustomer() {
                     <Textarea
                       id="desiredServiceNotes"
                       value={formData.desiredServiceNotes}
-                      onChange={(e) => handleInputChange("desiredServiceNotes", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("desiredServiceNotes", e.target.value)
+                      }
                       placeholder="Add details about this visit (e.g., vehicle info for car service, request details, urgency)"
                       rows={3}
                     />
@@ -1342,7 +1673,9 @@ export default function AddCustomer() {
                           <Input
                             id="salesItemType"
                             value={formData.salesItemType || ""}
-                            onChange={(e) => handleInputChange("salesItemType", e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("salesItemType", e.target.value)
+                            }
                             placeholder="e.g., Tire, Battery, Oil"
                           />
                         </div>
@@ -1351,9 +1684,14 @@ export default function AddCustomer() {
                           <Select
                             value={formData.salesPersonId || ""}
                             onValueChange={(value) => {
-                              const sp = salesPeople.find((s) => s.id === value);
+                              const sp = salesPeople.find(
+                                (s) => s.id === value,
+                              );
                               handleInputChange("salesPersonId", value);
-                              handleInputChange("salesPersonName", sp?.name || "");
+                              handleInputChange(
+                                "salesPersonName",
+                                sp?.name || "",
+                              );
                             }}
                           >
                             <SelectTrigger>
@@ -1404,26 +1742,34 @@ export default function AddCustomer() {
                             min="1"
                             value={formData.salesQuantity ?? ""}
                             onChange={(e) => {
-                              const q = e.target.value ? Number(e.target.value) : undefined;
+                              const q = e.target.value
+                                ? Number(e.target.value)
+                                : undefined;
                               handleInputChange("salesQuantity", q);
                               const p = formData.salesPricePerItem ?? 0;
-                              if (q && p) handleInputChange("salesAmount", q * p);
+                              if (q && p)
+                                handleInputChange("salesAmount", q * p);
                             }}
                             placeholder="0"
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="salesPricePerItem">Price per Item *</Label>
+                          <Label htmlFor="salesPricePerItem">
+                            Price per Item *
+                          </Label>
                           <Input
                             id="salesPricePerItem"
                             type="number"
                             min="0"
                             value={formData.salesPricePerItem ?? ""}
                             onChange={(e) => {
-                              const p = e.target.value ? Number(e.target.value) : undefined;
+                              const p = e.target.value
+                                ? Number(e.target.value)
+                                : undefined;
                               handleInputChange("salesPricePerItem", p);
                               const q = formData.salesQuantity ?? 0;
-                              if (q && p) handleInputChange("salesAmount", q * p);
+                              if (q && p)
+                                handleInputChange("salesAmount", q * p);
                             }}
                             placeholder="0"
                           />
@@ -1435,12 +1781,17 @@ export default function AddCustomer() {
                             type="number"
                             value={formData.salesAmount ?? ""}
                             onChange={(e) => {
-                              const a = e.target.value ? Number(e.target.value) : undefined;
+                              const a = e.target.value
+                                ? Number(e.target.value)
+                                : undefined;
                               handleInputChange("salesAmount", a);
                             }}
                             placeholder="0"
                           />
-                          <p className="text-xs text-muted-foreground">Auto-calculated as quantity × price, but you can override.</p>
+                          <p className="text-xs text-muted-foreground">
+                            Auto-calculated as quantity × price, but you can
+                            override.
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -1456,20 +1807,30 @@ export default function AddCustomer() {
                   <CardTitle className="flex items-center gap-2">
                     <FileText className="h-5 w-5" /> Service Preferences & Notes
                   </CardTitle>
-                  <CardDescription>Preferred services and additional information</CardDescription>
+                  <CardDescription>
+                    Preferred services and additional information
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="space-y-3">
                     <Label>Preferred Services</Label>
                     <div className="grid gap-3 md:grid-cols-3">
                       {availableServices.map((service) => (
-                        <div key={service} className="flex items-center space-x-2">
+                        <div
+                          key={service}
+                          className="flex items-center space-x-2"
+                        >
                           <Checkbox
                             id={service}
-                            checked={formData.preferredServices.includes(service)}
+                            checked={formData.preferredServices.includes(
+                              service,
+                            )}
                             onCheckedChange={() => handleServiceToggle(service)}
                           />
-                          <Label htmlFor={service} className="text-sm cursor-pointer">
+                          <Label
+                            htmlFor={service}
+                            className="text-sm cursor-pointer"
+                          >
                             {service}
                           </Label>
                         </div>
@@ -1482,7 +1843,9 @@ export default function AddCustomer() {
                     <Textarea
                       id="notes"
                       value={formData.notes}
-                      onChange={(e) => handleInputChange("notes", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("notes", e.target.value)
+                      }
                       placeholder="Any special requirements, preferences, or important notes about this customer..."
                       rows={4}
                     />
@@ -1508,11 +1871,15 @@ export default function AddCustomer() {
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Recently Added Customers</CardTitle>
-            <CardDescription>Quick overview of customers added from this page</CardDescription>
+            <CardDescription>
+              Quick overview of customers added from this page
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {createdCustomers.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No customers added yet.</p>
+              <p className="text-sm text-muted-foreground">
+                No customers added yet.
+              </p>
             ) : (
               <div className="space-y-3">
                 {createdCustomers.map((c) => {
@@ -1524,59 +1891,154 @@ export default function AddCustomer() {
                   const subType = customerRec?.subType || "";
                   const headerName = c.name;
                   const statusClass = visit
-                    ? (visit.leftAt
-                        ? "bg-success text-success-foreground"
-                        : (visit.expectedLeaveAt && new Date().toISOString() > visit.expectedLeaveAt
-                            ? "bg-destructive text-destructive-foreground"
-                            : "bg-warning text-warning-foreground"))
+                    ? visit.leftAt
+                      ? "bg-success text-success-foreground"
+                      : visit.expectedLeaveAt &&
+                          new Date().toISOString() > visit.expectedLeaveAt
+                        ? "bg-destructive text-destructive-foreground"
+                        : "bg-warning text-warning-foreground"
                     : "";
                   return (
-                    <div key={c.id} className="border rounded-lg overflow-hidden">
+                    <div
+                      key={c.id}
+                      className="border rounded-lg overflow-hidden"
+                    >
                       <div className="p-3 bg-gradient-to-r from-indigo-600/10 to-sky-600/10 dark:from-indigo-900/20 dark:to-sky-900/20 flex items-center justify-between">
                         <div>
                           <div className="flex items-center gap-2">
-                            <p className="font-semibold text-foreground">{headerName}</p>
-                            <Badge variant="outline">{type}{subType ? ` • ${subType}` : ""}</Badge>
+                            <p className="font-semibold text-foreground">
+                              {headerName}
+                            </p>
+                            <Badge variant="outline">
+                              {type}
+                              {subType ? ` • ${subType}` : ""}
+                            </Badge>
                           </div>
-                          <p className="text-xs text-muted-foreground">Added {new Date(c.createdAt).toLocaleString()}</p>
+                          <p className="text-xs text-muted-foreground">
+                            Added {new Date(c.createdAt).toLocaleString()}
+                          </p>
                         </div>
                         {visit ? (
                           <div className="flex items-center gap-2">
-                            <Badge variant="outline">{visit.visitType}{visit.service ? ` • ${visit.service}` : ""}</Badge>
+                            <Badge variant="outline">
+                              {visit.visitType}
+                              {visit.service ? ` • ${visit.service}` : ""}
+                            </Badge>
                             <Badge className={statusClass}>
-                              {visit.leftAt ? "Completed" : (visit.expectedLeaveAt && new Date().toISOString() > visit.expectedLeaveAt ? "Overdue" : "Active")}
+                              {visit.leftAt
+                                ? "Completed"
+                                : visit.expectedLeaveAt &&
+                                    new Date().toISOString() >
+                                      visit.expectedLeaveAt
+                                  ? "Overdue"
+                                  : "Active"}
                             </Badge>
                           </div>
                         ) : null}
                       </div>
                       <div className="p-3 grid gap-3 md:grid-cols-3">
                         <div className="space-y-1 text-sm">
-                          <div className="flex items-center gap-2"><Phone className="h-3 w-3" /><span>{customerRec?.phone || '-'}</span></div>
-                          <div className="flex items-center gap-2 text-muted-foreground"><Mail className="h-3 w-3" /><span>{email}</span></div>
-                          <div className="flex items-center gap-2 text-muted-foreground"><MapPin className="h-3 w-3" /><span>{loc}</span></div>
+                          <div className="flex items-center gap-2">
+                            <Phone className="h-3 w-3" />
+                            <span>{customerRec?.phone || "-"}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-muted-foreground">
+                            <Mail className="h-3 w-3" />
+                            <span>{email}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-muted-foreground">
+                            <MapPin className="h-3 w-3" />
+                            <span>{loc}</span>
+                          </div>
                         </div>
                         <div className="space-y-1 text-sm">
-                          <div><span className="text-muted-foreground">Registered:</span> <span className="font-medium">{customerRec?.registeredDate ? new Date(customerRec.registeredDate).toLocaleString() : '-'}</span></div>
-                          <div><span className="text-muted-foreground">Last Visit:</span> <span className="font-medium">{customerRec?.lastVisit ? new Date(customerRec.lastVisit).toLocaleString() : '-'}</span></div>
-                          <div><span className="text-muted-foreground">Customer ID:</span> <span className="font-medium">{c.id}</span></div>
+                          <div>
+                            <span className="text-muted-foreground">
+                              Registered:
+                            </span>{" "}
+                            <span className="font-medium">
+                              {customerRec?.registeredDate
+                                ? new Date(
+                                    customerRec.registeredDate,
+                                  ).toLocaleString()
+                                : "-"}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">
+                              Last Visit:
+                            </span>{" "}
+                            <span className="font-medium">
+                              {customerRec?.lastVisit
+                                ? new Date(
+                                    customerRec.lastVisit,
+                                  ).toLocaleString()
+                                : "-"}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">
+                              Customer ID:
+                            </span>{" "}
+                            <span className="font-medium">{c.id}</span>
+                          </div>
                         </div>
                         <div className="space-y-1 text-sm">
                           {visit ? (
                             <>
-                              <div><span className="text-muted-foreground">Arrived:</span> <span className="font-medium">{new Date(visit.arrivedAt).toLocaleString()}</span></div>
-                              <div><span className="text-muted-foreground">Expected Leave:</span> <span className="font-medium">{visit.expectedLeaveAt ? new Date(visit.expectedLeaveAt).toLocaleString() : '-'}</span></div>
-                              <div><span className="text-muted-foreground">Left:</span> <span className="font-medium">{visit.leftAt ? new Date(visit.leftAt).toLocaleString() : '-'}</span></div>
+                              <div>
+                                <span className="text-muted-foreground">
+                                  Arrived:
+                                </span>{" "}
+                                <span className="font-medium">
+                                  {new Date(visit.arrivedAt).toLocaleString()}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground">
+                                  Expected Leave:
+                                </span>{" "}
+                                <span className="font-medium">
+                                  {visit.expectedLeaveAt
+                                    ? new Date(
+                                        visit.expectedLeaveAt,
+                                      ).toLocaleString()
+                                    : "-"}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground">
+                                  Left:
+                                </span>{" "}
+                                <span className="font-medium">
+                                  {visit.leftAt
+                                    ? new Date(visit.leftAt).toLocaleString()
+                                    : "-"}
+                                </span>
+                              </div>
                             </>
                           ) : (
-                            <div className="text-muted-foreground">No active visit</div>
+                            <div className="text-muted-foreground">
+                              No active visit
+                            </div>
                           )}
                         </div>
                       </div>
                       <div className="p-3 border-t flex items-center justify-end gap-2">
                         {visit && !visit.leftAt ? (
-                          <Button size="sm" variant="outline" onClick={() => markLeft(visit.id)}>Mark Left</Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => markLeft(visit.id)}
+                          >
+                            Mark Left
+                          </Button>
                         ) : null}
-                        <Link to={`/customers/${c.id}`}><Button size="sm" variant="outline">Manage</Button></Link>
+                        <Link to={`/customers/${c.id}`}>
+                          <Button size="sm" variant="outline">
+                            Manage
+                          </Button>
+                        </Link>
                       </div>
                     </div>
                   );

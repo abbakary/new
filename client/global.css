@@ -197,62 +197,145 @@
 }
 
 @keyframes floatGentle {
-  0%, 100% { transform: translateY(0px) scale(1); }
-  50% { transform: translateY(-8px) scale(1.02); }
+  0%,
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.02);
+  }
 }
 
 @keyframes floatParticle {
-  0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.6; }
-  25% { transform: translateY(-10px) translateX(5px); opacity: 0.8; }
-  50% { transform: translateY(-5px) translateX(-3px); opacity: 1; }
-  75% { transform: translateY(-15px) translateX(2px); opacity: 0.7; }
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translateY(-10px) translateX(5px);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-5px) translateX(-3px);
+    opacity: 1;
+  }
+  75% {
+    transform: translateY(-15px) translateX(2px);
+    opacity: 0.7;
+  }
 }
 
 @keyframes wave1 {
-  0%, 100% { transform: translateX(0px) translateY(0px) scale(1); }
-  25% { transform: translateX(20px) translateY(-10px) scale(1.1); }
-  50% { transform: translateX(-15px) translateY(5px) scale(0.9); }
-  75% { transform: translateX(10px) translateY(-5px) scale(1.05); }
+  0%,
+  100% {
+    transform: translateX(0px) translateY(0px) scale(1);
+  }
+  25% {
+    transform: translateX(20px) translateY(-10px) scale(1.1);
+  }
+  50% {
+    transform: translateX(-15px) translateY(5px) scale(0.9);
+  }
+  75% {
+    transform: translateX(10px) translateY(-5px) scale(1.05);
+  }
 }
 
 @keyframes wave2 {
-  0%, 100% { transform: translateX(0px) translateY(0px) scale(1) rotate(0deg); }
-  33% { transform: translateX(-25px) translateY(15px) scale(1.15) rotate(10deg); }
-  66% { transform: translateX(15px) translateY(-10px) scale(0.85) rotate(-5deg); }
+  0%,
+  100% {
+    transform: translateX(0px) translateY(0px) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translateX(-25px) translateY(15px) scale(1.15) rotate(10deg);
+  }
+  66% {
+    transform: translateX(15px) translateY(-10px) scale(0.85) rotate(-5deg);
+  }
 }
 
 @keyframes wave3 {
-  0%, 100% { transform: translateX(0px) translateY(0px) scale(1); }
-  20% { transform: translateX(15px) translateY(-20px) scale(1.2); }
-  40% { transform: translateX(-10px) translateY(10px) scale(0.8); }
-  60% { transform: translateX(20px) translateY(5px) scale(1.1); }
-  80% { transform: translateX(-5px) translateY(-15px) scale(0.9); }
+  0%,
+  100% {
+    transform: translateX(0px) translateY(0px) scale(1);
+  }
+  20% {
+    transform: translateX(15px) translateY(-20px) scale(1.2);
+  }
+  40% {
+    transform: translateX(-10px) translateY(10px) scale(0.8);
+  }
+  60% {
+    transform: translateX(20px) translateY(5px) scale(1.1);
+  }
+  80% {
+    transform: translateX(-5px) translateY(-15px) scale(0.9);
+  }
 }
 
 @keyframes iconBounce {
-  0% { transform: scale(0.3); opacity: 0; }
-  50% { transform: scale(1.05); }
-  70% { transform: scale(0.9); }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @keyframes iconShake {
-  0% { transform: scale(0.3) translateX(0); opacity: 0; }
-  25% { transform: scale(0.8) translateX(-5px); opacity: 0.7; }
-  50% { transform: scale(1.05) translateX(5px); opacity: 1; }
-  75% { transform: scale(0.95) translateX(-3px); }
-  100% { transform: scale(1) translateX(0); }
+  0% {
+    transform: scale(0.3) translateX(0);
+    opacity: 0;
+  }
+  25% {
+    transform: scale(0.8) translateX(-5px);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05) translateX(5px);
+    opacity: 1;
+  }
+  75% {
+    transform: scale(0.95) translateX(-3px);
+  }
+  100% {
+    transform: scale(1) translateX(0);
+  }
 }
 
 @keyframes pulseRing {
-  0% { transform: scale(1); opacity: 0.6; }
-  50% { transform: scale(1.2); opacity: 0.2; }
-  100% { transform: scale(1.4); opacity: 0; }
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
 }
 
 @keyframes textGlow {
-  from { text-shadow: 0 0 5px rgba(250, 204, 21, 0.5); }
-  to { text-shadow: 0 0 20px rgba(250, 204, 21, 0.8), 0 0 30px rgba(250, 204, 21, 0.4); }
+  from {
+    text-shadow: 0 0 5px rgba(250, 204, 21, 0.5);
+  }
+  to {
+    text-shadow:
+      0 0 20px rgba(250, 204, 21, 0.8),
+      0 0 30px rgba(250, 204, 21, 0.4);
+  }
 }
 
 @keyframes fadeInUp {

@@ -1,4 +1,11 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { CheckCircle, XCircle } from "lucide-react";
 
@@ -26,32 +33,55 @@ export const useFeedback = (): FeedbackContextValue => {
   return ctx;
 };
 
-export const FeedbackProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [popup, setPopup] = useState<PopupState>({ open: false, type: "success", title: "", description: "", timeoutMs: 2500 });
+export const FeedbackProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [popup, setPopup] = useState<PopupState>({
+    open: false,
+    type: "success",
+    title: "",
+    description: "",
+    timeoutMs: 2500,
+  });
 
   const hide = useCallback(() => setPopup((p) => ({ ...p, open: false })), []);
 
-  const success = useCallback((title: string, description?: string, timeoutMs: number = 2500) => {
-    setPopup({ open: true, type: "success", title, description, timeoutMs });
-  }, []);
+  const success = useCallback(
+    (title: string, description?: string, timeoutMs: number = 2500) => {
+      setPopup({ open: true, type: "success", title, description, timeoutMs });
+    },
+    [],
+  );
 
-  const error = useCallback((title: string, description?: string, timeoutMs: number = 3000) => {
-    setPopup({ open: true, type: "error", title, description, timeoutMs });
-  }, []);
+  const error = useCallback(
+    (title: string, description?: string, timeoutMs: number = 3000) => {
+      setPopup({ open: true, type: "error", title, description, timeoutMs });
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!popup.open) return;
     if (!popup.timeoutMs || popup.timeoutMs <= 0) return;
-    const t = setTimeout(() => setPopup((p) => ({ ...p, open: false })), popup.timeoutMs);
+    const t = setTimeout(
+      () => setPopup((p) => ({ ...p, open: false })),
+      popup.timeoutMs,
+    );
     return () => clearTimeout(t);
   }, [popup.open, popup.timeoutMs]);
 
-  const value = useMemo<FeedbackContextValue>(() => ({ success, error, hide }), [success, error, hide]);
+  const value = useMemo<FeedbackContextValue>(
+    () => ({ success, error, hide }),
+    [success, error, hide],
+  );
 
   return (
     <FeedbackContext.Provider value={value}>
       {children}
-      <Dialog open={popup.open} onOpenChange={(o) => setPopup((p) => ({ ...p, open: o }))}>
+      <Dialog
+        open={popup.open}
+        onOpenChange={(o) => setPopup((p) => ({ ...p, open: o }))}
+      >
         <DialogContent
           className="max-w-lg border-2 border-yellow-400 bg-gradient-to-br from-yellow-300 via-yellow-200 to-yellow-100 text-yellow-950 shadow-2xl rounded-3xl p-0 backdrop-blur-sm animate-float-gentle overflow-hidden relative fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999]"
           aria-describedby={undefined}
@@ -78,9 +108,13 @@ export const FeedbackProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             <DialogTitle className="text-2xl font-bold mb-3 text-yellow-900 animate-text-glow">
               {popup.type === "success" ? "Success!" : "Failed!"}
             </DialogTitle>
-            <p className="text-lg font-semibold mb-3 text-yellow-900 animate-fade-in-up">{popup.title}</p>
+            <p className="text-lg font-semibold mb-3 text-yellow-900 animate-fade-in-up">
+              {popup.title}
+            </p>
             {popup.description ? (
-              <p className="text-base text-yellow-800/90 mb-4 leading-relaxed animate-fade-in-up-delayed">{popup.description}</p>
+              <p className="text-base text-yellow-800/90 mb-4 leading-relaxed animate-fade-in-up-delayed">
+                {popup.description}
+              </p>
             ) : null}
             <button
               type="button"
