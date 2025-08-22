@@ -354,6 +354,7 @@ function synthesizeDetailsFromDirectory(c: any) {
 export default function SearchCustomers() {
   const [searchTerm, setSearchTerm] = useState("");
   const { customers: storedCustomers } = useCustomerStore();
+  const { success } = useFeedback();
   const [customers, setCustomers] = useState([...storedCustomers, ...initialCustomers]);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(
     null,
