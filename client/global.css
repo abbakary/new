@@ -130,6 +130,15 @@
 }
 
 @layer utilities {
+  /* Dialog positioning fix */
+  [data-radix-dialog-content] {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 9999 !important;
+  }
+
   /* Floating animations */
   .animate-float-gentle {
     animation: floatGentle 3s ease-in-out infinite;
