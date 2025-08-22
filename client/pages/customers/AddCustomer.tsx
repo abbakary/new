@@ -428,7 +428,7 @@ export default function AddCustomer() {
     e.preventDefault();
     // Minimal validation based on visit type
     if ((formData.visitType === "Service" || formData.visitType === "Sales") && !formData.desiredService) {
-      toast.error("Missing desired service", { description: "Select the service for this visit." });
+      error("Missing desired service", "Select the service for this visit.");
       setActiveTab("service");
       return;
     }
