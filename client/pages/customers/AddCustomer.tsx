@@ -186,6 +186,7 @@ export default function AddCustomer() {
   const navigate = useNavigate();
   const { addVisit, markLeft, visits } = useVisitTracking();
   const { addCustomer, customers } = useCustomerStore();
+  const { success, error } = useFeedback();
 
   type ActiveTab = "basic" | "contact" | "service" | "preferences";
   const [activeTab, setActiveTab] = useState<ActiveTab>("basic");
