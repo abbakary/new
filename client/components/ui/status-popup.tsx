@@ -53,7 +53,7 @@ export const FeedbackProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       {children}
       <Dialog open={popup.open} onOpenChange={(o) => setPopup((p) => ({ ...p, open: o }))}>
         <DialogContent
-          className="max-w-lg border-2 border-yellow-400 bg-gradient-to-br from-yellow-300 via-yellow-200 to-yellow-100 text-yellow-950 shadow-2xl rounded-3xl p-0 backdrop-blur-sm animate-float-gentle overflow-hidden relative"
+          className="max-w-lg border-2 border-yellow-400 bg-gradient-to-br from-yellow-300 via-yellow-200 to-yellow-100 text-yellow-950 shadow-2xl rounded-3xl p-0 backdrop-blur-sm animate-float-gentle overflow-hidden relative fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999]"
           aria-describedby={undefined}
         >
           {/* Wave Background Animation */}
