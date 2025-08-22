@@ -494,7 +494,7 @@ export default function AddCustomer() {
         status: "Active",
       });
     }
-    toast.success("Customer registered successfully!");
+    success("Customer registered successfully!");
     navigate("/customers/search");
   };
 
