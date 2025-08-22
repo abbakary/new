@@ -314,7 +314,7 @@ export default function AddCustomer() {
 
   const handlePartialSave = () => {
     if (!validateBasicAndContact()) {
-      toast.error("Missing required information", { description: "Complete Basic Info and Contact & Address before saving." });
+      error("Missing required information", "Complete Basic Info and Contact & Address before saving.");
       return;
     }
     // Sales-specific validation and preparation
