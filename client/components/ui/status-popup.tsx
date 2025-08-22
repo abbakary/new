@@ -56,14 +56,11 @@ export const FeedbackProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           className="max-w-lg border-2 border-yellow-400 bg-gradient-to-br from-yellow-300 via-yellow-200 to-yellow-100 text-yellow-950 shadow-2xl rounded-3xl p-0 backdrop-blur-sm animate-float-gentle overflow-hidden relative fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999]"
           aria-describedby={undefined}
         >
-          {/* Wave Background Animation */}
+          {/* Subtle Wave Background Animation */}
           <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
-            <div className="absolute -top-20 -left-20 w-40 h-40 bg-yellow-400/20 rounded-full animate-wave-1"></div>
-            <div className="absolute -top-10 -right-10 w-32 h-32 bg-yellow-500/15 rounded-full animate-wave-2"></div>
-            <div className="absolute -bottom-15 -left-15 w-36 h-36 bg-yellow-300/25 rounded-full animate-wave-3"></div>
-            <div className="absolute top-1/2 right-4 w-6 h-6 bg-yellow-600/30 rounded-full animate-float-particle"></div>
-            <div className="absolute top-1/4 left-8 w-4 h-4 bg-yellow-400/40 rounded-full animate-float-particle-delayed"></div>
-            <div className="absolute bottom-1/3 right-12 w-3 h-3 bg-yellow-500/35 rounded-full animate-float-particle-slow"></div>
+            <div className="absolute -top-10 -left-10 w-24 h-24 bg-yellow-400/10 rounded-full animate-wave-1"></div>
+            <div className="absolute -bottom-8 -right-8 w-20 h-20 bg-yellow-300/15 rounded-full animate-wave-2"></div>
+            <div className="absolute top-1/3 right-6 w-3 h-3 bg-yellow-500/20 rounded-full animate-float-particle"></div>
           </div>
 
           <div className="flex flex-col items-center text-center p-8 relative z-10">
