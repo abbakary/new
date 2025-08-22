@@ -85,7 +85,11 @@ export const FeedbackProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             <button
               type="button"
               className="mt-4 inline-flex items-center justify-center rounded-xl border-2 border-yellow-500 bg-yellow-300 px-6 py-3 text-base font-semibold text-yellow-900 hover:bg-yellow-400 hover:border-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 active:scale-95"
-              onClick={hide}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                hide();
+              }}
             >
               Close
             </button>
