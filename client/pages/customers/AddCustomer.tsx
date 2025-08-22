@@ -512,6 +512,81 @@ export default function AddCustomer() {
     );
   }, [existingSearch]);
 
+  const handleSelectCustomer = (customer: any) => {
+    setSelectedCustomer(customer);
+    setShowVisitForm(true);
+    // Pre-fill form with customer data for quick visit creation
+    setFormData(prev => ({
+      ...prev,
+      firstName: customer.name.includes(' ') ? customer.name.split(' ')[0] : customer.name,
+      lastName: customer.name.includes(' ') ? customer.name.split(' ').slice(1).join(' ') : '',
+      companyName: customer.type !== 'Personal' ? customer.name : '',
+      customerType: customer.type || 'Personal',
+      subType: customer.subType || '',
+      phone: customer.phone || '',
+      email: customer.email || '',
+      address: customer.location ? customer.location.split(',')[0] : '',
+      city: customer.location ? customer.location.split(',')[1]?.trim() : '',
+      district: customer.location ? customer.location.split(',')[2]?.trim() : '',
+      country: customer.location ? customer.location.split(',')[3]?.trim() || 'Uganda' : 'Uganda',
+    }));
+  };
+
+  const handleCreateVisitForExisting = () => {
+    if (!selectedCustomer || !formData.visitType) {
+      error("Missing information", "Please select visit type and service details.");
+      return;
+    }
+
+    // Validation for sales visits
+    if (formData.visitType === "Sales") {
+      if (!formData.salesItemType || !formData.salesQuantity || !formData.salesPricePerItem || !(formData.salesPersonId || formData.salesPersonName)) {
+        error("Incomplete sales details", "Provide item type, quantity, price per item, and salesperson.");
+        return;
+      }
+      if (!formData.salesAmount && formData.salesQuantity && formData.salesPricePerItem) {
+        handleInputChange("salesAmount", formData.salesQuantity * formData.salesPricePerItem);
+      }
+    }
+
+    // Create visit for existing customer
+    const visit = addVisit({
+      customerName: selectedCustomer.name,
+      visitType: formData.visitType as any,
+      service: formData.desiredService || undefined,
+      arrivedAt: formData.arrivedAt || new Date().toISOString(),
+      notes: formData.desiredServiceNotes || formData.notes || undefined,
+      salesDetails: formData.visitType === "Sales" ? {
+        itemType: formData.salesItemType,
+        quantity: formData.salesQuantity,
+        pricePerItem: formData.salesPricePerItem,
+        amount: formData.salesAmount ?? (formData.salesQuantity && formData.salesPricePerItem ? formData.salesQuantity * formData.salesPricePerItem : undefined),
+        salesperson: formData.salesPersonId || formData.salesPersonName ? { id: formData.salesPersonId, name: formData.salesPersonName } : undefined,
+      } : undefined,
+    });
+
+    success("Visit created successfully!", `Visit started for ${selectedCustomer.name}`);
+
+    // Reset and return to selection
+    setSelectedCustomer(null);
+    setShowVisitForm(false);
+    setFormData(prev => ({
+      ...prev,
+      visitType: "",
+      arrivedAt: "",
+      leftAt: "",
+      desiredService: "",
+      desiredServiceNotes: "",
+      notes: "",
+      salesItemType: "",
+      salesQuantity: undefined,
+      salesPricePerItem: undefined,
+      salesAmount: undefined,
+      salesPersonId: "",
+      salesPersonName: "",
+    }));
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
