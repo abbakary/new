@@ -53,29 +53,29 @@ export const FeedbackProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       {children}
       <Dialog open={popup.open} onOpenChange={(o) => setPopup((p) => ({ ...p, open: o }))}>
         <DialogContent
-          className="max-w-md border-yellow-300 bg-yellow-100 text-yellow-950 shadow-2xl rounded-2xl p-0"
+          className="max-w-lg border-2 border-yellow-400 bg-gradient-to-br from-yellow-300 via-yellow-200 to-yellow-100 text-yellow-950 shadow-2xl rounded-3xl p-0 backdrop-blur-sm"
           aria-describedby={undefined}
         >
-          <div className="flex flex-col items-center text-center p-6">
+          <div className="flex flex-col items-center text-center p-8">
             {popup.type === "success" ? (
-              <div className="mb-3">
-                <CheckCircle className="h-14 w-14 text-green-600" />
+              <div className="mb-6 bg-green-100 rounded-full p-4 shadow-lg">
+                <CheckCircle className="h-20 w-20 text-green-600 stroke-[1.5]" />
               </div>
             ) : (
-              <div className="mb-3">
-                <XCircle className="h-14 w-14 text-red-600" />
+              <div className="mb-6 bg-red-100 rounded-full p-4 shadow-lg">
+                <XCircle className="h-20 w-20 text-red-600 stroke-[1.5]" />
               </div>
             )}
-            <h3 className="text-xl font-bold mb-1">
-              {popup.type === "success" ? "Success" : "Failed"}
+            <h3 className="text-2xl font-bold mb-3 text-yellow-900">
+              {popup.type === "success" ? "Success!" : "Failed!"}
             </h3>
-            <p className="text-base font-medium mb-2">{popup.title}</p>
+            <p className="text-lg font-semibold mb-3 text-yellow-900">{popup.title}</p>
             {popup.description ? (
-              <p className="text-sm text-yellow-900/80">{popup.description}</p>
+              <p className="text-base text-yellow-800/90 mb-4 leading-relaxed">{popup.description}</p>
             ) : null}
             <button
               type="button"
-              className="mt-5 inline-flex items-center justify-center rounded-md border border-yellow-400 bg-yellow-200 px-4 py-2 text-sm font-medium hover:bg-yellow-300 focus:outline-none"
+              className="mt-4 inline-flex items-center justify-center rounded-xl border-2 border-yellow-500 bg-yellow-300 px-6 py-3 text-base font-semibold text-yellow-900 hover:bg-yellow-400 hover:border-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg"
               onClick={hide}
             >
               Close
