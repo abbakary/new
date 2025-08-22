@@ -320,7 +320,7 @@ export default function AddCustomer() {
     // Sales-specific validation and preparation
     if (formData.visitType === "Sales") {
       if (!formData.salesItemType || !formData.salesQuantity || !formData.salesPricePerItem || !(formData.salesPersonId || formData.salesPersonName)) {
-        toast.error("Incomplete sales details", { description: "Provide item type, quantity, price per item, and salesperson." });
+        error("Incomplete sales details", "Provide item type, quantity, price per item, and salesperson.");
         setActiveTab("service");
         return;
       }
