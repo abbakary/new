@@ -193,6 +193,8 @@ export default function AddCustomer() {
   const [mode, setMode] = useState<"new" | "existing">("new");
   const [existingSearch, setExistingSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
+  const [showVisitForm, setShowVisitForm] = useState(false);
   type CreatedCustomerSummary = {
     id: string;
     name: string;
