@@ -47,7 +47,7 @@ import {
   TrendingUp,
   AlertTriangle,
 } from "lucide-react";
-import { toast } from "sonner";
+import { useFeedback } from "@/components/ui/status-popup";
 
 // Lightweight directory for search results
 const initialCustomers = [
