@@ -367,6 +367,45 @@ export default function SearchCustomers() {
   // Tracking integration
   const { visits, addVisit, updateExpectedLeave, markLeft, estimateExpectedLeave, alerts } = useVisitTracking();
 
+  // Helper functions for customer analytics
+  const getCustomerVisits = useCallback((customerId: string) => {
+    return visits.filter(visit =>
+      visit.customerId === customerId ||
+      customers.find(c => c.id === customerId && c.name === visit.customerName)
+    );
+  }, [visits, customers]);
+
+  const getCustomerStats = useCallback((customerId: string) => {
+    const customerVisits = getCustomerVisits(customerId);
+    const serviceVisits = customerVisits.filter(v => v.visitType === 'Service');
+    const salesVisits = customerVisits.filter(v => v.visitType === 'Sales');
+    const inquiryVisits = customerVisits.filter(v => v.visitType === 'Ask');
+    const completedVisits = customerVisits.filter(v => v.status === 'Completed');
+    const activeVisits = customerVisits.filter(v => v.status === 'Active');
+    const overdueVisits = customerVisits.filter(v => v.status === 'Overdue');
+
+    const totalSalesAmount = salesVisits.reduce((sum, visit) => {
+      return sum + (visit.salesDetails?.amount || 0);
+    }, 0);
+
+    const lastVisit = customerVisits.length > 0
+      ? customerVisits.sort((a, b) => new Date(b.arrivedAt).getTime() - new Date(a.arrivedAt).getTime())[0]
+      : null;
+
+    return {
+      totalVisits: customerVisits.length,
+      serviceVisits: serviceVisits.length,
+      salesVisits: salesVisits.length,
+      inquiryVisits: inquiryVisits.length,
+      completedVisits: completedVisits.length,
+      activeVisits: activeVisits.length,
+      overdueVisits: overdueVisits.length,
+      totalSalesAmount,
+      lastVisit,
+      recentVisits: customerVisits.slice(0, 3)
+    };
+  }, [getCustomerVisits]);
+
   const [visitType, setVisitType] = useState<"Ask" | "Service" | "Sales">("Service");
   const [service, setService] = useState<string>(SERVICE_OPTIONS[0]);
   const [arrivedAtLocal, setArrivedAtLocal] = useState<string>(() => toLocalInput(new Date()));
