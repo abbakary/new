@@ -428,7 +428,7 @@ export default function SearchCustomers() {
       ),
     );
     setIsEditing(false);
-    toast.success("Customer updated", { description: `${details.companyName || details.firstName + ' ' + details.lastName} changes saved.` });
+    success("Customer updated", `${details.companyName || details.firstName + ' ' + details.lastName} changes saved.`);
   };
 
   // Tracking derived
