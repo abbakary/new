@@ -693,6 +693,241 @@ export default function AddCustomer() {
         </Card>
       ) : null}
 
+      {/* Visit creation form for existing customer */}
+      {mode === "existing" && showVisitForm && selectedCustomer ? (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Wrench className="h-5 w-5" />
+              Create Visit for {selectedCustomer.name}
+            </CardTitle>
+            <CardDescription>
+              Customer information is pre-filled. Add visit details and service requirements.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Customer Summary */}
+            <div className="bg-accent/50 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-semibold">{selectedCustomer.name}</p>
+                  <p className="text-sm text-muted-foreground">{selectedCustomer.id} • {selectedCustomer.type}</p>
+                  <div className="flex items-center gap-4 mt-2 text-sm">
+                    <span className="flex items-center gap-1">
+                      <Phone className="h-3 w-3" />
+                      {selectedCustomer.phone}
+                    </span>
+                    {selectedCustomer.email && (
+                      <span className="flex items-center gap-1 text-muted-foreground">
+                        <Mail className="h-3 w-3" />
+                        {selectedCustomer.email}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <Button variant="outline" size="sm" onClick={() => {
+                  setSelectedCustomer(null);
+                  setShowVisitForm(false);
+                }}>
+                  <ArrowLeft className="h-4 w-4 mr-1" />
+                  Back to Search
+                </Button>
+              </div>
+            </div>
+
+            {/* Visit Type Selection */}
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Visit Type *</Label>
+                <RadioGroup value={formData.visitType} onValueChange={(value) => handleInputChange("visitType", value)} className="grid grid-cols-3 gap-4">
+                  <label className={`border rounded-lg p-3 cursor-pointer ${formData.visitType === "Service" ? "bg-accent" : ""}`}>
+                    <div className="flex items-center gap-2">
+                      <RadioGroupItem value="Service" id="visit-service" />
+                      <Wrench className="h-4 w-4" />
+                      <span className="font-medium">Service</span>
+                    </div>
+                  </label>
+                  <label className={`border rounded-lg p-3 cursor-pointer ${formData.visitType === "Sales" ? "bg-accent" : ""}`}>
+                    <div className="flex items-center gap-2">
+                      <RadioGroupItem value="Sales" id="visit-sales" />
+                      <span className="font-medium">Sales</span>
+                    </div>
+                  </label>
+                  <label className={`border rounded-lg p-3 cursor-pointer ${formData.visitType === "Ask" ? "bg-accent" : ""}`}>
+                    <div className="flex items-center gap-2">
+                      <RadioGroupItem value="Ask" id="visit-ask" />
+                      <span className="font-medium">Inquiry</span>
+                    </div>
+                  </label>
+                </RadioGroup>
+              </div>
+
+              {/* Arrival Time */}
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="arrivedAt">Arrived At</Label>
+                  <Input
+                    id="arrivedAt"
+                    type="datetime-local"
+                    value={formData.arrivedAt}
+                    onChange={(e) => handleInputChange("arrivedAt", e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="leftAt">Expected Leave</Label>
+                  <Input
+                    id="leftAt"
+                    type="datetime-local"
+                    value={formData.leftAt}
+                    onChange={(e) => handleInputChange("leftAt", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {/* Service Selection */}
+              <div className="space-y-2">
+                <Label htmlFor="desiredService">Service Required {formData.visitType === "Service" || formData.visitType === "Sales" ? "*" : ""}</Label>
+                <Select value={formData.desiredService} onValueChange={(value) => handleInputChange("desiredService", value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a service" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableServices.map((svc) => (
+                      <SelectItem key={svc} value={svc}>
+                        {svc}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="desiredServiceNotes">Visit Notes</Label>
+                <Textarea
+                  id="desiredServiceNotes"
+                  value={formData.desiredServiceNotes}
+                  onChange={(e) => handleInputChange("desiredServiceNotes", e.target.value)}
+                  placeholder="Add details about this visit (e.g., vehicle info, specific requests, urgency)"
+                  rows={3}
+                />
+              </div>
+
+              {/* Sales Details - Show only if Sales visit type */}
+              {formData.visitType === "Sales" && (
+                <div className="space-y-4 border-t pt-4">
+                  <h4 className="font-medium">Sales Details</h4>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="salesItemType">Item Type *</Label>
+                      <Input
+                        id="salesItemType"
+                        value={formData.salesItemType || ""}
+                        onChange={(e) => handleInputChange("salesItemType", e.target.value)}
+                        placeholder="e.g., Tire, Battery, Oil"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="salesPerson">Salesperson *</Label>
+                      <Select
+                        value={formData.salesPersonId || ""}
+                        onValueChange={(value) => {
+                          const sp = salesPeople.find((s) => s.id === value);
+                          handleInputChange("salesPersonId", value);
+                          handleInputChange("salesPersonName", sp?.name || "");
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select salesperson" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {salesPeople.map((sp) => (
+                            <SelectItem key={sp.id} value={sp.id}>
+                              {sp.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="salesQuantity">Quantity *</Label>
+                      <Input
+                        id="salesQuantity"
+                        type="number"
+                        min="1"
+                        value={formData.salesQuantity ?? ""}
+                        onChange={(e) => {
+                          const q = e.target.value ? Number(e.target.value) : undefined;
+                          handleInputChange("salesQuantity", q);
+                          const p = formData.salesPricePerItem ?? 0;
+                          if (q && p) handleInputChange("salesAmount", q * p);
+                        }}
+                        placeholder="0"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="salesPricePerItem">Price per Item *</Label>
+                      <Input
+                        id="salesPricePerItem"
+                        type="number"
+                        min="0"
+                        value={formData.salesPricePerItem ?? ""}
+                        onChange={(e) => {
+                          const p = e.target.value ? Number(e.target.value) : undefined;
+                          handleInputChange("salesPricePerItem", p);
+                          const q = formData.salesQuantity ?? 0;
+                          if (q && p) handleInputChange("salesAmount", q * p);
+                        }}
+                        placeholder="0"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="salesAmount">Total Amount</Label>
+                      <Input
+                        id="salesAmount"
+                        type="number"
+                        value={formData.salesAmount ?? ""}
+                        onChange={(e) => {
+                          const a = e.target.value ? Number(e.target.value) : undefined;
+                          handleInputChange("salesAmount", a);
+                        }}
+                        placeholder="Auto-calculated"
+                        className="bg-muted"
+                        readOnly
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-end gap-3 pt-4 border-t">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setSelectedCustomer(null);
+                  setShowVisitForm(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={handleCreateVisitForExisting}
+                className="bg-yellow-500 hover:bg-yellow-600 text-white"
+              >
+                <Save className="h-4 w-4 mr-2" />
+                Create Visit
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
+
       {/* New customer form flow */}
       {mode === "new" && !showForm ? (
         <Card>
