@@ -354,6 +354,7 @@ function synthesizeDetailsFromDirectory(c: any) {
 export default function SearchCustomers() {
   const [searchTerm, setSearchTerm] = useState("");
   const { customers: storedCustomers } = useCustomerStore();
+  const { visits } = useVisitTracking();
   const { success } = useFeedback();
   const [customers, setCustomers] = useState([...storedCustomers, ...initialCustomers]);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(
@@ -361,6 +362,7 @@ export default function SearchCustomers() {
   );
   const [isEditing, setIsEditing] = useState(false);
   const [details, setDetails] = useState<any | null>(null);
+  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
 
   // Tracking integration
   const { visits, addVisit, updateExpectedLeave, markLeft, estimateExpectedLeave, alerts } = useVisitTracking();
