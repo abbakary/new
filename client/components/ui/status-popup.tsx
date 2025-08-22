@@ -78,9 +78,9 @@ export const FeedbackProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                 <XCircle className="h-20 w-20 text-red-600 stroke-[1.5] relative z-10" />
               </div>
             )}
-            <h3 className="text-2xl font-bold mb-3 text-yellow-900 animate-text-glow">
+            <DialogTitle className="text-2xl font-bold mb-3 text-yellow-900 animate-text-glow">
               {popup.type === "success" ? "Success!" : "Failed!"}
-            </h3>
+            </DialogTitle>
             <p className="text-lg font-semibold mb-3 text-yellow-900 animate-fade-in-up">{popup.title}</p>
             {popup.description ? (
               <p className="text-base text-yellow-800/90 mb-4 leading-relaxed animate-fade-in-up-delayed">{popup.description}</p>
