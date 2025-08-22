@@ -383,7 +383,7 @@ export default function AddCustomer() {
       },
       ...prev,
     ]);
-    toast.success("Customer saved", { description: "Visit started and header notifications updated." });
+    success("Customer saved", "Visit started and header notifications updated.");
     // Reset and collapse form
     setFormData((prev) => ({
       ...prev,
