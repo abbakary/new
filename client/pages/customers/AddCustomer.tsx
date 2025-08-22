@@ -1056,7 +1056,7 @@ export default function AddCustomer() {
                               variant="outline"
                               onClick={() => {
                                 if (!newSalesName.trim()) {
-                                  toast.error("Enter salesperson name");
+                                  error("Enter salesperson name");
                                   return;
                                 }
                                 const id = `SP-${Date.now()}`;
