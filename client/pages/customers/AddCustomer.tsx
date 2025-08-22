@@ -666,11 +666,21 @@ export default function AddCustomer() {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={() => navigate(`/customers/${c.id}`)}>
-                          <Eye className="h-4 w-4 mr-1" /> View
+                        <Button
+                          size="sm"
+                          onClick={() => handleSelectCustomer(c)}
+                          className="bg-yellow-500 hover:bg-yellow-600 text-white"
+                        >
+                          <Wrench className="h-4 w-4 mr-1" />
+                          Create Visit
                         </Button>
-                        <Button size="sm" onClick={() => navigate(`/customers/${c.id}`)}>
-                          Use Customer
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => navigate(`/customers/${c.id}`)}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          View Details
                         </Button>
                       </div>
                     </div>
