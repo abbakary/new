@@ -544,39 +544,126 @@ export default function SearchCustomers() {
             {searchTerm.trim() && filteredCustomers.length === 0 && (
               <p className="text-sm text-muted-foreground">No customers match your search.</p>
             )}
-            {searchTerm.trim() && filteredCustomers.map((c) => (
-              <div
-                key={c.id}
-                onClick={() => selectCustomer(c.id)}
-                className={`p-3 rounded-lg border cursor-pointer hover:bg-accent transition-colors ${
-                  selectedCustomerId === c.id ? "bg-accent" : ""
-                }`}
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <p className="font-medium text-foreground">{c.name}</p>
-                    <p className="text-xs text-muted-foreground">{c.id}</p>
-                    <div className="mt-2 flex items-center gap-2">
-                      <Badge variant="outline" className={getCustomerTypeColor(c.type)}>
+            {searchTerm.trim() && filteredCustomers.map((c) => {
+              const stats = getCustomerStats(c.id);
+              return (
+                <div
+                  key={c.id}
+                  onClick={() => selectCustomer(c.id)}
+                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-[1.02] ${
+                    selectedCustomerId === c.id
+                      ? "bg-gradient-to-br from-yellow-50 to-amber-50 border-yellow-300 shadow-md"
+                      : "bg-white hover:bg-gray-50 border-gray-200"
+                  }`}
+                >
+                  {/* Header with name and status */}
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <h3 className="font-semibold text-gray-900 text-lg">{c.name}</h3>
+                      <p className="text-xs text-gray-500">{c.id}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className={`${getCustomerTypeColor(c.type)} font-medium`}>
                         {c.type}
                       </Badge>
-                      <Badge className={getStatusColor(c.status)}>{c.status}</Badge>
+                      <Badge className={`${getStatusColor(c.status)} font-medium`}>{c.status}</Badge>
                     </div>
                   </div>
-                  <div className="text-right space-y-1 text-sm">
-                    <div className="flex items-center gap-1 justify-end">
-                      <Phone className="h-3 w-3" /> {c.phone}
+
+                  {/* Contact info */}
+                  <div className="grid grid-cols-1 gap-2 mb-4 text-sm">
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Phone className="h-4 w-4 text-blue-500" />
+                      <span>{c.phone || 'No phone'}</span>
                     </div>
-                    <div className="flex items-center gap-1 justify-end text-muted-foreground">
-                      <Mail className="h-3 w-3" /> {c.email}
-                    </div>
-                    <div className="flex items-center gap-1 justify-end text-muted-foreground">
-                      <MapPin className="h-3 w-3" /> {c.location}
+                    {c.email && (
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <Mail className="h-4 w-4 text-green-500" />
+                        <span className="truncate">{c.email}</span>
+                      </div>
+                    )}
+                    {c.location && (
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <MapPin className="h-4 w-4 text-red-500" />
+                        <span className="truncate">{c.location}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Visit Statistics */}
+                  <div className="bg-gray-50 rounded-lg p-3 mb-3">
+                    <h4 className="text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wide">Visit Summary</h4>
+                    <div className="grid grid-cols-3 gap-2 text-xs">
+                      <div className="text-center">
+                        <div className="font-bold text-lg text-blue-600">{stats.totalVisits}</div>
+                        <div className="text-gray-500">Total</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="font-bold text-lg text-green-600">{stats.completedVisits}</div>
+                        <div className="text-gray-500">Done</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="font-bold text-lg text-amber-600">{stats.activeVisits}</div>
+                        <div className="text-gray-500">Active</div>
+                      </div>
                     </div>
                   </div>
+
+                  {/* Service breakdown */}
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-1">
+                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                        <span>{stats.serviceVisits} Service</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <span>{stats.salesVisits} Sales</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                        <span>{stats.inquiryVisits} Ask</span>
+                      </div>
+                    </div>
+                    {stats.totalSalesAmount > 0 && (
+                      <div className="flex items-center gap-1 font-semibold text-green-600">
+                        <DollarSign className="h-3 w-3" />
+                        ${stats.totalSalesAmount.toLocaleString()}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Last visit indicator */}
+                  {stats.lastVisit && (
+                    <div className="mt-3 pt-3 border-t border-gray-200">
+                      <div className="flex items-center justify-between text-xs text-gray-600">
+                        <span>Last visit: {new Date(stats.lastVisit.arrivedAt).toLocaleDateString()}</span>
+                        <Badge
+                          variant="outline"
+                          className={`text-xs ${
+                            stats.lastVisit.visitType === 'Service' ? 'border-blue-300 text-blue-700' :
+                            stats.lastVisit.visitType === 'Sales' ? 'border-green-300 text-green-700' :
+                            'border-purple-300 text-purple-700'
+                          }`}
+                        >
+                          {stats.lastVisit.visitType}
+                        </Badge>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Overdue warning */}
+                  {stats.overdueVisits > 0 && (
+                    <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded-lg">
+                      <div className="flex items-center gap-2 text-red-700 text-xs">
+                        <AlertTriangle className="h-4 w-4" />
+                        <span className="font-medium">{stats.overdueVisits} overdue visit{stats.overdueVisits > 1 ? 's' : ''}</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </CardContent>
         </Card>
 
